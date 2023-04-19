@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from filehandler.filehandler import Buffer
 
 
 class Rot(ABC):
@@ -31,6 +32,7 @@ class Rot13(Rot):
                 result += chr(new_pos).upper() if char.isupper() else chr(new_pos)
             else:
                 result += char
+        Buffer().buffer.append([self.text, result])
         return result
 
 
@@ -46,8 +48,12 @@ class Rot47(Rot):
                 x.append(chr(33 + ((j + 14) % 94)))
             else:
                 x.append(self.text[i])
+        Buffer().buffer.append([self.text, "".join(x)])
         return "".join(x)
 
 
 rot13 = Rot13("abc")
+rot47 = Rot47("abc")
 print(rot13.encrypt_decrypt())
+print(rot47.encrypt_decrypt())
+print(Buffer().buffer)
