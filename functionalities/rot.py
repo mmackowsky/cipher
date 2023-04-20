@@ -1,5 +1,6 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
-from filehandler.filehandler import Buffer
+from typing import Union
 
 
 class Rot(ABC):
@@ -7,11 +8,11 @@ class Rot(ABC):
         self.text = text
 
     @abstractmethod
-    def encrypt_decrypt(self) -> str:
+    def encrypt_decrypt(self) -> None:
         raise NotImplementedError
 
     @staticmethod
-    def create_rot(text: str, rot_type: str):
+    def create_rot(text: str, rot_type: str) -> Union[Rot13, Rot47]:
         if rot_type == "rot13":
             return Rot13(text)
         elif rot_type == "rot47":
@@ -21,6 +22,9 @@ class Rot(ABC):
 class Rot13(Rot):
     def __init__(self, text: str) -> None:
         super().__init__(text)
+
+    def __repr__(self):
+        return "Rot13"
 
     def encrypt_decrypt(self) -> str:
         result = ""
@@ -32,7 +36,6 @@ class Rot13(Rot):
                 result += chr(new_pos).upper() if char.isupper() else chr(new_pos)
             else:
                 result += char
-        Buffer().buffer.append([self.text, result])
         return result
 
 
@@ -40,20 +43,15 @@ class Rot47(Rot):
     def __init__(self, text: str) -> None:
         super().__init__(text)
 
+    def __repr__(self):
+        return "Rot47"
+
     def encrypt_decrypt(self) -> str:
-        x = []
+        result = []
         for i in range(len(self.text)):
             j = ord(self.text[i])
             if 33 <= j <= 126:
-                x.append(chr(33 + ((j + 14) % 94)))
+                result.append(chr(33 + ((j + 14) % 94)))
             else:
-                x.append(self.text[i])
-        Buffer().buffer.append([self.text, "".join(x)])
-        return "".join(x)
-
-
-rot13 = Rot13("abc")
-rot47 = Rot47("abc")
-print(rot13.encrypt_decrypt())
-print(rot47.encrypt_decrypt())
-print(Buffer().buffer)
+                result.append(self.text[i])
+        return "".join(result)
