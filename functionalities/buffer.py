@@ -14,15 +14,21 @@ class Text:
 
 
 class Buffer:
+    BUFFER_MENU = {"1.": "Show", "2.": "Remove element", "3.": "Return"}
+
     data = []
 
-    @staticmethod
-    def add(value: Text):
-        Buffer.data.append(value)
+    def show_buffer_menu(self) -> None:
+        for key, value in self.BUFFER_MENU.items():
+            print(key, value)
 
     def show(self):
         for count, element in enumerate(self.data):
             print(count, element)
+
+    @staticmethod
+    def add(value: Text):
+        Buffer.data.append(value)
 
     def remove_element(self):
         while True:
