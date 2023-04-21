@@ -7,9 +7,8 @@ class Menu:
     OPTIONS = {
         "1": "Encrypt",
         "2": "Decrypt",
-        "3": "Show actual data.",
-        "4": "Save to file",
-        "5": "Read file.",
+        "3": "Buffer options",
+        "4": "File Handler options",
         "6": "Return",
     }
 
@@ -20,7 +19,52 @@ class Menu:
 
 class Manager:
     @staticmethod
+    def file_handler_options():
+        file_handler = Filehandler()
+        while True:
+            file_handler.show_file_handler_menu()
+            user_command = input("Choose option: ")
+            match user_command.split():
+                case ["1"]:
+                    file_handler.make_file()
+                    print(f"File {file_handler.file_name} has been made.\n")
+                case ["2"]:
+                    file_handler.read_file()
+                case ["3"]:
+                    file_handler.add_data_to_file(Buffer.data)
+                case ["4"]:
+                    file_handler.remove_line()
+                case ["5"]:
+                    file_handler.remove_all()
+                case ["6"]:
+                    file_handler.remove_file()
+                case ["7"]:
+                    break
+                case _:
+                    print("Invalid option.")
+
+    @staticmethod
+    def buffer_options():
+        buff = Buffer()
+        while True:
+            buff.show_buffer_menu()
+            user_command = input("Choose option: ")
+            match user_command.split():
+                case ["1"]:
+                    buff.show()
+                case ["2"]:
+                    buff.remove_element()
+                case ["3"]:
+                    break
+                case _:
+                    print("Invalid option.")
+
+    @staticmethod
     def start():
+        """
+        Structure to config. Include new menu (buffer and file_handler).
+        :return:
+        """
         print("Welcome in Cipher.\n")
         while True:
             while True:
@@ -62,3 +106,6 @@ class Manager:
                         Filehandler.read_file()
                     case ["6"]:
                         break
+
+
+Manager.start()
