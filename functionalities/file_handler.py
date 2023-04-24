@@ -58,15 +58,18 @@ class Filehandler:
 
     def remove_file(self) -> None:
         while True:
-            question = input(
-                f"Are you sure to delete {self.file_name} file? This will be irreversible. (Y/N): "
-            )
-            if question.lower() == "y":
-                os.remove(f"{self.file_name}.txt")
-                print("File removed.")
-                break
-            elif question.lower() == "n":
-                print("Operation stopped.")
-                break
-            else:
-                print("Wrong data. Type Y or N")
+            try:
+                question = input(
+                    f"Are you sure to delete {self.file_name} file? This will be irreversible. (Y/N): "
+                )
+                if question.lower() == "y":
+                    os.remove(f"{self.file_name}.txt")
+                    print("File removed.")
+                    break
+                elif question.lower() == "n":
+                    print("Operation stopped.")
+                    break
+                else:
+                    print("Wrong data. Type Y or N")
+            except FileNotFoundError:
+                print("File do not exist.")
