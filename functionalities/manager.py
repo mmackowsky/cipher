@@ -9,7 +9,7 @@ class Menu:
         "2": "Decrypt",
         "3": "Buffer options",
         "4": "File Handler options",
-        "6": "Return",
+        "5": "Return",
     }
 
     def show_menu(self) -> None:
@@ -42,6 +42,7 @@ class Manager:
                     break
                 case _:
                     print("Invalid option.")
+            print(30 * "----")
 
     @staticmethod
     def buffer_options():
@@ -58,18 +59,14 @@ class Manager:
                     break
                 case _:
                     print("Invalid option.")
+            print(30 * "----")
 
     @staticmethod
     def start():
-        """
-        Structure to config. Include new menu (buffer and file_handler).
-        :return:
-        """
-        print("Welcome in Cipher.\n")
         while True:
             while True:
                 choose = input(
-                    "Choose ROT (type rot13 or rot47):\nIf you want exit, type: 'exit'."
+                    "Choose ROT (type rot13 or rot47), if you want exit, type: 'exit': "
                 )
                 if choose == "rot13" or choose == "rot47":
                     break
@@ -87,25 +84,32 @@ class Manager:
                     case ["1"]:
                         rot.encrypt_decrypt()
                         value = Text(
-                            txt=txt, rot_type=rot.__repr__(), status="encrypted"
+                            txt=txt,
+                            result=rot.encrypt_decrypt().__repr__(),
+                            rot_type=rot.__repr__(),
+                            status="encrypted",
                         )
                         Buffer.add(value)
                         print("Data encrypted\n")
                     case ["2"]:
                         rot.encrypt_decrypt()
                         value = Text(
-                            txt=txt, rot_type=rot.__repr__(), status="decrypted"
+                            txt=txt,
+                            result=rot.encrypt_decrypt().__repr__(),
+                            rot_type=rot.__repr__(),
+                            status="decrypted",
                         )
                         Buffer.add(value)
                         print("Data decrypted\n")
                     case ["3"]:
-                        Buffer().show()
+                        Manager.buffer_options()
                     case ["4"]:
-                        Filehandler.add_data_to_file(Buffer.data)
+                        Manager.file_handler_options()
                     case ["5"]:
-                        Filehandler.read_file()
-                    case ["6"]:
                         break
+                    case _:
+                        print("Invalid option.")
+                print(30 * "----")
 
 
 Manager.start()
