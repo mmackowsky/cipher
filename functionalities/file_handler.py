@@ -1,70 +1,95 @@
-from buffer import Text, Buffer
 import json
 import os
+from dataclasses import asdict
+from typing import List
+
+from functionalities.buffer import Text
 
 
 class Filehandler:
-    FILE_HANDLER_MENU = {
-        "1.": "Make file",
-        "2.": "Read file.",
-        "3.": "Add data",
-        "4.": "Remove line",
-        "5.": "Remove all",
-        "6.": "Remove file",
-        "7.": "Return",
-    }
+    @staticmethod
+    def get_file_name() -> str:
+        file_name = input("Type file name: ")
+        return file_name
 
-    def __init__(self) -> None:
-        self.file_name = input("Type file name: ")
+    @staticmethod
+    def make_file(buffer: List[Text]):
+        file_name = Filehandler.get_file_name()
+        with open(f"files/{file_name}.json", "w") as json_file:
+            saved_data = []
+            for values in buffer:
+                buffer_dict = asdict(values)
+                saved_data.append(buffer_dict)
+            json.dump(saved_data, json_file, indent=4)
 
-    def show_file_handler_menu(self):
-        for key, value in self.FILE_HANDLER_MENU.items():
-            print(key, value)
-
-    def make_file(self):
-        with open(f"{self.file_name}.txt", "w+") as file:
-            file.write("")
-
-    def read_file(self) -> None:
+    @staticmethod
+    def read_file() -> None:
+        file_name = Filehandler.get_file_name()
         try:
-            with open(f"{self.file_name}.txt", "r") as file:
-                for count, line in enumerate(file.readlines()):
-                    print(count, line)
+            with open(f"files/{file_name}.json") as json_file:
+                read_data = json.load(json_file)
+                for count, value in enumerate(read_data, 1):
+                    print(count, value)
+        except json.decoder.JSONDecodeError:
+            print("File is empty.")
         except FileNotFoundError:
             print("File do not exist\n")
 
-    def add_data_to_file(self, buffer: list[str]) -> None:
+    @staticmethod
+    def add_new_data(buffer: List[Text]) -> None:
+        file_name = Filehandler.get_file_name()
         try:
-            with open(f"{self.file_name}.txt", "a") as file:
-                for line in buffer:
-                    file.writelines(f"{str(line)}\n")
+            with open(f"files/{file_name}.json") as json_file:
+                data = json.load(json_file)
+
+            for values in buffer:
+                data_to_add = asdict(values)
+                data.append(data_to_add)
+
+            with open(f"files/{file_name}.json", "w") as json_file:
+                json.dump(data, json_file, indent=4)
         except FileNotFoundError:
             print("File do not exist\n")
 
-    def remove_line(self) -> None:
-        self.read_file()
-        line_to_remove = int(input("Type number of element which you want remove: "))
-        with open(f"{self.file_name}.txt", "r") as file:
-            lines = file.readlines()
+    @staticmethod
+    def remove_element() -> None:
+        file_name = Filehandler.get_file_name()
+        with open(f"files/{file_name}.json", "r") as json_file:
+            data = json.load(json_file)
 
-        with open(f"{self.file_name}.txt", "w") as file:
-            for i, line in enumerate(lines):
-                if i != line_to_remove:
-                    file.write(line)
+        while True:
+            try:
+                index = input("Which element you want to remove: ")
+                del data[int(index) - 1]
+                print("Element removed")
+                break
+            except json.decoder.JSONDecodeError:
+                print("File is empty.")
+                break
+            except IndexError:
+                print("Element do not exist on the list.")
 
-    def remove_all(self) -> None:
-        with open(f"{self.file_name}.txt", "w") as file:
-            file.write("")
+        with open(f"files/{file_name}.json", "w") as json_file:
+            json.dump(data, json_file, indent=4)
 
-    def remove_file(self) -> None:
+    @staticmethod
+    def remove_all_data() -> None:
+        file_name = Filehandler.get_file_name()
+        with open(f"files/{file_name}.json", "w") as json_file:
+            json.dump("", json_file)
+        print("Data removed.\n")
+
+    @staticmethod
+    def remove_file() -> None:
+        file_name = Filehandler.get_file_name()
         while True:
             try:
                 question = input(
-                    f"Are you sure to delete {self.file_name} file? This will be irreversible. (Y/N): "
+                    f"Are you sure to delete {file_name} file? This will be irreversible. (Y/N): "
                 )
                 if question.lower() == "y":
-                    os.remove(f"{self.file_name}.txt")
-                    print("File removed.")
+                    os.remove(f"files/{file_name}.json")
+                    print("File removed.\n")
                     break
                 elif question.lower() == "n":
                     print("Operation stopped.")
