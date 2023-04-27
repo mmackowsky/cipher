@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from typing import Union
 
@@ -23,7 +24,7 @@ class Rot13(Rot):
     def __init__(self, text: str) -> None:
         super().__init__(text)
 
-    def __repr__(self):
+    def __str__(self):
         return "Rot13"
 
     def encrypt_decrypt(self) -> str:
@@ -43,7 +44,7 @@ class Rot47(Rot):
     def __init__(self, text: str) -> None:
         super().__init__(text)
 
-    def __repr__(self):
+    def __str__(self):
         return "Rot47"
 
     def encrypt_decrypt(self) -> str:
