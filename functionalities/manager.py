@@ -1,54 +1,115 @@
-from functionalities.rot import Rot
-from functionalities.buffer import Text, Buffer
+from functionalities.buffer import Buffer, Text
 from functionalities.file_handler import Filehandler
+from functionalities.rot import Rot
 
 
 class Menu:
-    OPTIONS = {
-        "1": "Encrypt",
-        "2": "Decrypt",
-        "3": "Buffer options",
-        "4": "File Handler options",
-        "5": "Return",
+    MAIN_MENU = {
+        "1": "ROT13/ROT47",
+        "2": "Buffer options",
+        "3": "File Handler options",
+        "4": "Exit",
     }
 
-    def show_menu(self) -> None:
-        for key, value in self.OPTIONS.items():
+    ROT_MENU = {"1.": "Encrypt", "2.": "Decrypt", "3.": "Return"}
+
+    BUFFER_MENU = {"1.": "Show", "2.": "Remove element", "3.": "Return"}
+
+    FILE_HANDLER_MENU = {
+        "1.": "Make file",
+        "2.": "Read file",
+        "3.": "Add data to file",
+        "4.": "Remove element from file",
+        "5.": "Remove all elements from file",
+        "6.": "Remove file",
+        "7.": "Return",
+    }
+
+    @staticmethod
+    def show_menu(menu) -> None:
+        for key, value in menu.items():
             print(f"{key}: {value}")
 
 
 class Manager:
     @staticmethod
-    def file_handler_options():
+    def get_rot_type():
+        while True:
+            choose = input("Choose ROT (type rot13 or rot47): ")
+            if choose in ["rot13", "rot47"]:
+                return choose
+            print("Wrong data! Type 'rot13' or 'rot47'.\n")
+
+    @staticmethod
+    def process_text(txt, rot_type, status):
+        rot = Rot.create_rot(text=txt, rot_type=rot_type)
+        rot.encrypt_decrypt()
+        value = Text(
+            txt=txt,
+            result=rot.encrypt_decrypt().__repr__(),
+            rot_type=rot.__str__(),
+            status=status,
+        )
+        Buffer.add(value)
+
+    @staticmethod
+    def encrypt_text():
+        choose = Manager.get_rot_type()
+        txt = input("Type text: ")
+        Manager.process_text(txt, choose, "encrypted")
+
+    @staticmethod
+    def decrypt_text():
+        choose = Manager.get_rot_type()
+        txt = input("Type text: ")
+        Manager.process_text(txt, choose, "decrypted")
+
+    @staticmethod
+    def rots_options():
+        while True:
+            Menu.show_menu(Menu.ROT_MENU)
+            user_command = input("Choose: ")
+            match user_command.split():
+                case ["1"]:
+                    Manager.encrypt_text()
+                case ["2"]:
+                    Manager.decrypt_text()
+                case ["3"]:
+                    break
+                case _:
+                    print("Option does not exist.")
+
+    @staticmethod
+    def file_handler_options() -> None:
         file_handler = Filehandler()
         while True:
-            file_handler.show_file_handler_menu()
+            Menu.show_menu(Menu.FILE_HANDLER_MENU)
             user_command = input("Choose option: ")
             match user_command.split():
                 case ["1"]:
-                    file_handler.make_file()
-                    print(f"File {file_handler.file_name} has been made.\n")
+                    file_handler.make_file(Buffer.data)
+                    print(f"File {file_handler.get_file_name()} has been made.\n")
                 case ["2"]:
                     file_handler.read_file()
                 case ["3"]:
-                    file_handler.add_data_to_file(Buffer.data)
+                    file_handler.add_new_data(Buffer.data)
                 case ["4"]:
-                    file_handler.remove_line()
+                    file_handler.remove_element()
                 case ["5"]:
-                    file_handler.remove_all()
+                    file_handler.remove_all_data()
                 case ["6"]:
                     file_handler.remove_file()
                 case ["7"]:
                     break
                 case _:
-                    print("Invalid option.")
+                    print("Wrong option.")
             print(30 * "----")
 
     @staticmethod
-    def buffer_options():
+    def buffer_options() -> None:
         buff = Buffer()
         while True:
-            buff.show_buffer_menu()
+            Menu.show_menu(Menu.BUFFER_MENU)
             user_command = input("Choose option: ")
             match user_command.split():
                 case ["1"]:
@@ -62,54 +123,21 @@ class Manager:
             print(30 * "----")
 
     @staticmethod
-    def start():
+    def start() -> None:
+        print("Welcome in CIPHER.")
         while True:
-            while True:
-                choose = input(
-                    "Choose ROT (type rot13 or rot47), if you want exit, type: 'exit': "
-                )
-                if choose == "rot13" or choose == "rot47":
-                    break
-                elif choose == "exit":
+            Menu.show_menu(Menu.MAIN_MENU)
+            menu_command = input("Choose option from MENU: ")
+            match menu_command.split():
+                case ["1"]:
+                    Manager.rots_options()
+                case ["2"]:
+                    Manager.buffer_options()
+                case ["3"]:
+                    Manager.file_handler_options()
+                case ["4"]:
+                    print("See you soon!")
                     exit()
-                else:
-                    print("Wrong data! Type 'rot13' or 'rot47'.\n")
-            txt = input("Type text: ")
-            rot = Rot.create_rot(text=txt, rot_type=choose)
-            while True:
-                print(rot)
-                Menu().show_menu()
-                menu_command = input("Choose option from MENU: ")
-                match menu_command.split():
-                    case ["1"]:
-                        rot.encrypt_decrypt()
-                        value = Text(
-                            txt=txt,
-                            result=rot.encrypt_decrypt().__repr__(),
-                            rot_type=rot.__repr__(),
-                            status="encrypted",
-                        )
-                        Buffer.add(value)
-                        print("Data encrypted\n")
-                    case ["2"]:
-                        rot.encrypt_decrypt()
-                        value = Text(
-                            txt=txt,
-                            result=rot.encrypt_decrypt().__repr__(),
-                            rot_type=rot.__repr__(),
-                            status="decrypted",
-                        )
-                        Buffer.add(value)
-                        print("Data decrypted\n")
-                    case ["3"]:
-                        Manager.buffer_options()
-                    case ["4"]:
-                        Manager.file_handler_options()
-                    case ["5"]:
-                        break
-                    case _:
-                        print("Invalid option.")
-                print(30 * "----")
-
-
-Manager.start()
+                case _:
+                    print("Invalid option.")
+            print(30 * "----")
