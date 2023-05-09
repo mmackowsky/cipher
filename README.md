@@ -1,3 +1,3 @@
-# cipher
-*[General info]
-*[Technologies]
+# CIPHER
+*[General info](#general-info)
+*[Technologies](#technologies)
