@@ -1,34 +1,7 @@
 from functionalities.buffer import Buffer, Text
 from functionalities.file_handler import Filehandler
+from functionalities.menu import Menu
 from functionalities.rot import Rot
-
-
-class Menu:
-    MAIN_MENU = {
-        "1": "ROT13/ROT47",
-        "2": "Buffer options",
-        "3": "File Handler options",
-        "4": "Exit",
-    }
-
-    ROT_MENU = {"1.": "Encrypt", "2.": "Decrypt", "3.": "Return"}
-
-    BUFFER_MENU = {"1.": "Show", "2.": "Remove element", "3.": "Return"}
-
-    FILE_HANDLER_MENU = {
-        "1.": "Make file",
-        "2.": "Read file",
-        "3.": "Add data to file",
-        "4.": "Remove element from file",
-        "5.": "Remove all elements from file",
-        "6.": "Remove file",
-        "7.": "Return",
-    }
-
-    @staticmethod
-    def show_menu(menu) -> None:
-        for key, value in menu.items():
-            print(f"{key}: {value}")
 
 
 class Manager:
@@ -69,12 +42,12 @@ class Manager:
         while True:
             Menu.show_menu(Menu.ROT_MENU)
             user_command = input("Choose: ")
-            match user_command.split():
-                case ["1"]:
+            match user_command:
+                case "1":
                     Manager.encrypt_text()
-                case ["2"]:
+                case "2":
                     Manager.decrypt_text()
-                case ["3"]:
+                case "3":
                     break
                 case _:
                     print("Option does not exist.")
@@ -85,21 +58,21 @@ class Manager:
         while True:
             Menu.show_menu(Menu.FILE_HANDLER_MENU)
             user_command = input("Choose option: ")
-            match user_command.split():
-                case ["1"]:
+            match user_command:
+                case "1":
                     file_handler.make_file(Buffer.data)
                     print(f"File {file_handler.get_file_name()} has been made.\n")
-                case ["2"]:
+                case "2":
                     file_handler.read_file()
-                case ["3"]:
+                case "3":
                     file_handler.add_new_data(Buffer.data)
-                case ["4"]:
+                case "4":
                     file_handler.remove_element()
-                case ["5"]:
+                case "5":
                     file_handler.remove_all_data()
-                case ["6"]:
+                case "6":
                     file_handler.remove_file()
-                case ["7"]:
+                case "7":
                     break
                 case _:
                     print("Wrong option.")
@@ -111,12 +84,12 @@ class Manager:
         while True:
             Menu.show_menu(Menu.BUFFER_MENU)
             user_command = input("Choose option: ")
-            match user_command.split():
-                case ["1"]:
+            match user_command:
+                case "1":
                     buff.show()
-                case ["2"]:
+                case "2":
                     buff.remove_element()
-                case ["3"]:
+                case "3":
                     break
                 case _:
                     print("Invalid option.")
@@ -128,14 +101,14 @@ class Manager:
         while True:
             Menu.show_menu(Menu.MAIN_MENU)
             menu_command = input("Choose option from MENU: ")
-            match menu_command.split():
-                case ["1"]:
+            match menu_command:
+                case "1":
                     Manager.rots_options()
-                case ["2"]:
+                case "2":
                     Manager.buffer_options()
-                case ["3"]:
+                case "3":
                     Manager.file_handler_options()
-                case ["4"]:
+                case "4":
                     print("See you soon!")
                     exit()
                 case _:
